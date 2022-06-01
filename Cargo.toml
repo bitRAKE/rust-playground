@@ -1,0 +1,17 @@
+[package]
+name = "rust-playground"
+version = "0.1.0"
+authors = ["Rickey Bowers Jr. <bitRAKE@gmail.com>"]
+edition = "2021"
+description = "Try some stuff with Rust."
+license = "Apache-2.0 OR MIT"
+readme = "README.md"
+keywords = ["Windows", "size"]
+categories = ["other"]
+repository = "https://github.com/bitRAKE/rust-playground"
+homepage = "https://github.com/bitRAKE"
+publish = false
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
