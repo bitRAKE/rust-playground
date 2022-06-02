@@ -1,12 +1,10 @@
-#![feature(lang_items)]
-#![no_std]
-#![no_main]
+#![cfg(windows)] #![feature(lang_items)] #![no_std] #![no_main]
 #![windows_subsystem = "windows"]
 
 use core::hint::unreachable_unchecked;
 use winapi::um::processthreadsapi::ExitProcess;
 use winapi::um::winuser::{
-    GetDesktopWindow,MessageBoxA,MB_OK,
+    GetDesktopWindow, MessageBoxA, MB_OK,
 };
 
 #[no_mangle]

@@ -1,6 +1,4 @@
-#![feature(lang_items)]
-#![no_std]
-#![no_main]
+#![cfg(windows)] #![feature(lang_items)] #![no_std] #![no_main]
 #![windows_subsystem = "console"]
 use core::ffi::*;
 
@@ -51,6 +49,3 @@ pub fn mainCRTStartup() -> isize {
 fn my_panic(_info: &core::panic::PanicInfo) -> ! { loop {} }
 #[lang = "eh_personality"] //#[no_mangle]
 pub extern "C" fn eh_personality() {}
-
-#[cfg(not(windows))]
-fn main() {}
