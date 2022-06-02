@@ -4,20 +4,14 @@
 #![windows_subsystem = "console"]
 use core::ffi::*;
 
-#[panic_handler]
-fn my_panic(_info: &core::panic::PanicInfo) -> ! { loop {} }
-#[lang = "eh_personality"] //#[no_mangle]
-pub extern "C" fn eh_personality() {}
-
-
 pub struct BOOL(pub i32);
 impl BOOL {
     #[inline]
     pub fn as_bool(self) -> bool { self.0 != 0 }
 }
-#[repr(transparent)]
-pub struct HANDLE(pub isize);
 
+#[repr(C)] // better than #[repr(transparent)]?
+pub struct HANDLE(pub isize);
 //const STD_INPUT_HANDLE:     isize = -10isize;
 const STD_OUTPUT_HANDLE:    isize = -11isize;
 //const STD_ERROR_HANDLE:     isize = -12isize;
@@ -53,6 +47,10 @@ pub fn mainCRTStartup() -> isize {
     0 // return ERROR_SUCCESS
 }
 
+#[panic_handler]
+fn my_panic(_info: &core::panic::PanicInfo) -> ! { loop {} }
+#[lang = "eh_personality"] //#[no_mangle]
+pub extern "C" fn eh_personality() {}
 
 #[cfg(not(windows))]
 fn main() {}

@@ -4,13 +4,7 @@
 #![windows_subsystem = "windows"]
 use core::ffi::*;
 
-#[panic_handler]
-fn my_panic(_info: &core::panic::PanicInfo) -> ! { loop {} }
-#[lang = "eh_personality"] //#[no_mangle]
-pub extern "C" fn eh_personality() {}
-
-
-#[repr(transparent)]
+#[repr(C)] // better than #[repr(transparent)]?
 pub struct HANDLE(pub isize);
 
 #[link(name = "User32")]
@@ -34,6 +28,11 @@ pub fn mainCRTStartup() -> isize {
             0 as u32) as isize
     }
 }
+
+#[panic_handler]
+fn my_panic(_info: &core::panic::PanicInfo) -> ! { loop {} }
+#[lang = "eh_personality"] //#[no_mangle]
+pub extern "C" fn eh_personality() {}
 
 #[cfg(not(windows))]
 fn main() {}

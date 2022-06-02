@@ -11,7 +11,20 @@ categories = ["other"]
 repository = "https://github.com/bitRAKE/rust-playground"
 homepage = "https://github.com/bitRAKE"
 publish = false
+default-run = "conraw"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+
+[dependencies.winapi]
+version = "0.3.8"
+features = [
+	"handleapi",
+	"heapapi",
+	"winuser",
+	"processthreadsapi",
+	"fileapi",
+	"processenv",
+	"winbase",
+]
