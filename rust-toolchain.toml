@@ -1,2 +1,22 @@
+# If you see this, run `rustup self update` to get rustup 1.23 or newer.
+#	NOTE: above line required to show error to older versions.
+
 [toolchain]
-channel = "nightly"
+#channel = "stable"
+
+# https://rust-lang.github.io/rustup/concepts/channels.html#nightly-availability
+#	channel = "nightly-2022-03-13"
+#	channel = "nightly-2022-04-27"
+
+# using latest nightly causes sporatic builds, only use if needed:
+	channel = "nightly"
+
+# for component history by target see:
+#	https://rust-lang.github.io/rustup/concepts/profiles.html
+#	https://rust-lang.github.io/rustup-components-history/
+
+# profile = "minimal" # rustc, rust-std, and cargo
+# profile = "default" # minimal and: rust-docs, rustfmt, and clippy
+	targets = ["x86_64-pc-windows-msvc"]
+	components = ["miri", "rls", "rust-analysis", "rust-docs", "rust-src", "llvm-tools-preview"]
+#	targets = ["x86_64-unknown-none"]
