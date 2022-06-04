@@ -1,5 +1,5 @@
 #![cfg(windows)]
-#![feature(lang_items, alloc_error_handler)]
+#![feature(naked_functions, lang_items, alloc_error_handler)]
 #![no_std] #![no_main]
 #![windows_subsystem = "console"]
 #![allow(non_snake_case)]
@@ -7,6 +7,7 @@
 // https://doc.rust-lang.org/rust-by-example/unsafe/asm.html
 // https://doc.rust-lang.org/reference/inline-assembly.html
 // https://rust-lang.github.io/rfcs/2873-inline-asm.html
+// https://rust-lang.github.io/rfcs/2972-constrained-naked.html
 
 //use core::alloc::{GlobalAlloc, Layout};
 use core::arch::asm;
@@ -52,42 +53,33 @@ fn BaseForm( buffer: *mut u8, number: u64, base: u8 ) {
 }
 
 
-#[inline(never)]
 /// `This WILL cause an exception if (n,k) produce too large a result.`
 /// https://en.wikipedia.org/wiki/Binomial_coefficient
 ///
-fn binomial_coefficient( n:u64, k:u64 ) -> u64 {
-    let mut result:u64;
-    unsafe { asm!(
-// this hack because we don't know what the epilogue/prologue is doing
-// maybe there is a way to make a naked leaf fn?
-"           jmp     9f
-        2:  lea     edx,[rcx*2]
-            jrcxz   4f
-            cmp     eax, edx
-            jnc     3f
-            sub     ecx, eax
-            neg     ecx
-        3:  push    rcx
-            push    rax
-            sub     ecx, 1
-            sub     eax, 1
-            call    2b
-            pop     rdx
-            pop     rcx
-            mul     rdx
-            div     rcx
-            retn
-        4:  lea     eax,[rcx+1]
-            retn
-        9:  call    2b
-",          out("rdx") _,
-            inout("rcx") k => _,
-            inout("rax") n => result,
-            options(pure, nomem),
-    )};
-    result
-}
+#[naked]
+pub unsafe extern "C"
+fn binomial_coefficient( n:u64, k:u64 ) -> u64 { asm!(r#"
+        xchg    eax, edx
+    2:  lea     edx, [rcx*2]
+        jrcxz   4f
+        cmp     eax, edx
+        jnc     3f
+        sub     ecx, eax
+        neg     ecx
+    3:  push    rcx
+        push    rax
+        sub     ecx, 1
+        sub     eax, 1
+        call    2b
+        pop     rdx
+        pop     rcx
+        mul     rdx
+        div     rcx
+        retn
+    4:  lea     eax,[rcx+1]
+        retn
+"#,     options(noreturn)
+)}
 
 
 #[inline(always)]
@@ -135,7 +127,7 @@ pub fn mainCRTStartup() -> ! {
             k as DWORD, &mut rit, 0 as *mut VOID);
         };
 
-        BaseForm(tbuff, binomial_coefficient(40,20), 10);
+        BaseForm(tbuff, binomial_coefficient(20,40), 10);
         let k = wsprintfA(buffer.as_ptr() as * mut i8, "%hs, \0".as_ptr() as * const i8, tbuff );
         WriteConsoleA(handle, buffer.as_ptr() as *const VOID,
         k as DWORD, &mut rit, 0 as *mut VOID);
