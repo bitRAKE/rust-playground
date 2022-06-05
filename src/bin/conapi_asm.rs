@@ -45,7 +45,7 @@ fn BaseForm( buffer: *mut u8, number: u64, base: u8 ) {
             jnz     3b
 "#,         base = in(reg) u64::from(base),     // unchanged
             tab = in(reg) DIGIT_TABLE.as_ptr(), // unchanged
-            inout("rdi") buffer => _,          // unchanged
+            inout("rdi") buffer => _,
             inout("rax") number => _,
             // RDX used internally and not availible for other uses
             out("rdx") _,
@@ -55,7 +55,6 @@ fn BaseForm( buffer: *mut u8, number: u64, base: u8 ) {
 
 /// `This WILL cause an exception if (n,k) produce too large a result.`
 /// https://en.wikipedia.org/wiki/Binomial_coefficient
-///
 #[naked]
 pub unsafe extern "C"
 fn binomial_coefficient( n:u64, k:u64 ) -> u64 { asm!(r#"
