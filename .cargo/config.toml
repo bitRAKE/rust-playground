@@ -1,2 +1,7 @@
 [build]
-rustflags = ["-C", "target-cpu=native"]
+rustflags = [
+#	"--out-dir", "./temps",
+	"-C", "save-temps",
+	"-C", "target-cpu=native",
+	"--emit=llvm-ir"
+]

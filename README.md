@@ -5,6 +5,6 @@ Starting at the bottom, learning about the build system and Rust language withou
 
 ```sh
 git checkout latest
-# This command should build all the examples:
+# This command should build all:
 cargo build --release
 ```
